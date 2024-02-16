@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?familiy=Material+Icons+Sharp">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+    <div class="container">
+        <aside>
+            <div class="top">
+                <span class="material-symbols-outlined" style="align-items:center ; color:#7380ec;"> water_drop</span>
+                <h2> Rain <span class="warning">Harvesting</span></h2>
+                <!-- <div class="close">
+                    <span class="material-symbols-outlined">close</span>
+
+                </div> -->
+            </div>
+
+          <div class="sidebar">
+                <a href="{{url_for('dashboard')}}" class="active">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="{{url_for('settings')}}">
+                    <span class="material-symbols-outlined">tune</span>
+                    <h3>Settings</h3>
+                </a>
+                <a href="#">
+                    <span class="material-symbols-outlined">logout</span>
+                    <h3>Logout</h3>
+                </a>
+         </div>
+        </aside>
+
+        <main>
+            <h1>Dashboard</h1>
+            <div class="date">
+                <input type= "date" id="todayDate" style="display: none;">
+                <p id="currentTime" style="color: black; font-size: 15px;"></p>
+                <p id="formattedDate" style="color: black;"> </p>
+            </div>
+
+            <div class="insights">
+                <div class="water_level">
+                    <span class="material-symbols-outlined">opacity</span>
+                    <div class="middle">
+                        <div class="left">
+                            <h3 style="padding-top: 1.4rem;">Water Level</h3>
+                            <h1 id="distance">00.00</h1>
+                            <h3>Liters</h3>
+                        </div>
+                        <div class="progress">
+                            <svg>
+                                <circle cx='38' cy ='38' r ='36'></circle>
+                            </svg>
+                            <div class="number">
+                                <p>81%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <!-- END OF WATER LEVEL -->
+                <div class="Flow_rate">
+                    <span class="material-symbols-outlined">water</span>
+                    <h3 style="padding-top: 1.4rem;">Flow Rate</h3>
+                    <div class="middle">
+              <div class="left">
+                            <h1 id="flow-value">00.00</h1>
+                            <h3>Per Minute</h3>
+                        </div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+
+
+                  <!-- END OF FLOW RATE -->
+                  <div class="Fill_time">
+                    <span class="material-symbols-outlined">water_ec</span>
+                    <h3 style="padding-top: 1.4rem;">Time to Fill</h3>
+                    <div class="middle">
+                        <div class="left">
+                            <h1>00:00</h1>
+                            <h3>Hours/Mins</h3>
+                        </div>
+
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <!-- END OF FILL TIME -->
+
+            </div>
+                <!-- END OF INSIGHTS -->
+                <div class="Component">
+                    <H2>Components</H2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Component List</th>
+                                <th>Status</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Relay 1</td>
+                                <td class="warning">Active</td>
+                            </tr>
+                            <tr>
+                                <td>Relay 2</td>
+                                <td class="warning">Active</td>
+                            </tr>
+                            <tr>
+                                <td>Relay 3</td>
+                                <td class="warning">Active</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </main>
+    </div>
+            <!------  SENSOR SCRIPT  ------->
+            <!------  ULTRASONIC ------->
+    <script>
+        function updateDistance() {
+            fetch('/get_distance')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('distance').innerText = data.distance.toFixed(2);
+                });
+        }
+
+        // Update every 2 seconds (adjust as needed)
+        setInterval(updateDistance, 1000);
+
+        // Initial update
+        updateDistance();
+    </script>
+            <!------  FLOW RATE  ------->
+    <script>
+        // Function to update the flow value every 5 seconds
+        setInterval(function() {
+            // Make a request to the server to get the updated flow value
+            fetch('/get_flow')
+                .then(response => response.json())
+                .then(data => {
+                    // Update the displayed value with 2 decimal places
+                    const formattedFlow = data.flow.toFixed(2);
+                    document.getElementById('flow-value').innerText = formattedFlow;
+                })
+                .catch(error => console.error('Error:', error));
+        },1000);  // Update every 5 seconds
+    </script>
+            <!------  END SENSOR SCRIPT  ------->
+    <script>
+        // Get today's date in the format "Day name, Month day no."
+        function getFormattedDate() {
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            const today = new Date();
+            return today.toLocaleDateString('en-US', options);
+        }
+
+        // Set the default value of the input to today's date in the standard format
+        const todayDateInput = document.getElementById('todayDate');
+        todayDateInput.value = new Date().toISOString().split('T')[0]; // Standard "YYYY-MM-DD" format
+
+        // Display the formatted date in a separate element
+        const formattedDateElement = document.getElementById('formattedDate');
+        formattedDateElement.textContent = `${getFormattedDate()}`;
+    </script>
+    <script>
+        // Get the current time in 12-hour format with hours and minutes
+        function getCurrentTime() {
+            const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+            const currentTime = new Date();
+            return currentTime.toLocaleTimeString('en-US', options);
+        }
+
+        // Display the current time in the specified format
+        const currentTimeElement = document.getElementById('currentTime');
+        currentTimeElement.textContent = `${getCurrentTime()}`;
+    </script>
+
+</body>
+</html>

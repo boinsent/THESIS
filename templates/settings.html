@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?familiy=Material+Icons+Sharp">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+    <div class="container">
+        <aside>
+            <div class="top">
+                <span class="material-symbols-outlined" style="align-items:center ; color:#7380ec;"> water_drop</span>
+                <h2> Rain <span class="warning">Harvesting</span></h2>
+                <!-- <div class="close">
+                    <span class="material-symbols-outlined">close</span>
+
+                </div> -->
+            </div>
+
+          <div class="sidebar">
+                <a href="{{url_for('dashboard')}}">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="{{url_for('settings')}}" class="active">
+                    <span class="material-symbols-outlined">tune</span>
+                    <h3>Settings</h3>
+                </a>
+                <a href="#">
+                    <span class="material-symbols-outlined">logout</span>
+                    <h3>Logout</h3>
+                </a>
+         </div>
+        </aside>
+
+         <main>
+            <h1>Settings</h1>
+            <div class="top">
+                <div class="date">
+                    <input type= "date" id="todayDate" style="display: none;">
+                    <p id="currentTime" style="color: black; font-size: 15px;"></p>
+                    <p id="formattedDate" style="color: black;"> </p>
+                </div>
+                <div class="content">
+                    <H2>Account Information</H2>
+                    <div class="registered_txt">
+                       <p style="color: black; font-size: 15px;">You're currently registered as: xxxx </p>
+                    </div>
+                    <div class="changepass_box">
+                        <h4 style="font-size: 15px;">Change Password</h4>
+                        <p  style="color: black; margin-top: 0.8rem;">Old password</p>
+                        <input class="old-password" id="input_password">
+
+                        <p  style="color: black; margin-top: 0.8rem;">New password</p>
+                        <input class="new-password"id="input_password">
+
+                        <p  style="color: black; margin-top: 0.8rem;">Confirm password</p>
+                        <input class="confirm_password"id="input_password">
+                        <div class="savebtn_container">
+                            <button class="savebtn"><h3>Save </h3></button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        // Get today's date in the format "Day name, Month day no."
+        function getFormattedDate() {
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            const today = new Date();
+            return today.toLocaleDateString('en-US', options);
+        }
+
+        // Set the default value of the input to today's date in the standard format
+        const todayDateInput = document.getElementById('todayDate');
+        todayDateInput.value = new Date().toISOString().split('T')[0]; // Standard "YYYY-MM-DD" format
+
+        // Display the formatted date in a separate element
+        const formattedDateElement = document.getElementById('formattedDate');
+        formattedDateElement.textContent = `${getFormattedDate()}`;
+    </script>
+    <script>
+        // Get the current time in 12-hour format with hours and minutes
+        function getCurrentTime() {
+            const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+            const currentTime = new Date();
+            return currentTime.toLocaleTimeString('en-US', options);
+        }
+
+        // Display the current time in the specified format
+        const currentTimeElement = document.getElementById('currentTime');
+        currentTimeElement.textContent = `${getCurrentTime()}`;
+    </script>
+</body>
+</html>
